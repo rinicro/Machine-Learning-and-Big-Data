@@ -32,16 +32,34 @@ def integra_mc_vc(fun, a, b, num_puntos=10000):
     return (Ndeb / num_puntos) * (b - a) * M
 
 # Representamos la función que vamos a integrar
-plt.figure()
+plt.figure(figsize=(10,10))
 plt.plot(np.linspace(0,2*np.pi,100000),list(map(f,np.linspace(0,2*np.pi,100000))))
+plt.title("Función de la que se va a calcular la integral")
+plt.xlabel("$x$")
+plt.ylabel("$f(x)$")
+plt.savefig("func.png")
 plt.show()
 
 # Calculamos en un bucle el tiempo de ejecución para cada una de las opciones
 # haciéndolo cada vez con más precisión
-for n in np.linspace(1000,1000000,50):
+times = ([],[])
+for n in np.linspace(1000,1000000,51):
     time1 = time.process_time()
-    print(integra_mc_it(f,0,2*np.pi,1000000))
-    toc = time.process_time()
-    print(integra_mc_vc(f,0,2*np.pi,1000000))
-    tuc = time.process_time()
-    print(1000*(toc-tic), 1000*(tuc-toc))
+    integra_mc_it(f,0,2*np.pi, int(n))
+    time2 = time.process_time()
+    integra_mc_vc(f,0,2*np.pi, int(n))
+    time3 = time.process_time()
+    times[0].append(time2 - time1)
+    times[1].append(time3 - time2)
+    
+# Representamos el tiempo que tardan las dos funciones en ejecutarse según la
+# precisión que utilicemos
+plt.figure(figsize=(10,10))
+plt.plot(np.linspace(1000,1000000,51), times[0], 'r', label="Tiempo utilizando un bucle")
+plt.plot(np.linspace(1000,1000000,51), times[1], 'g', label="Tiempo utilizando un vector")
+plt.title("Tiempo de ejecución de \textit{integra_mc}")
+plt.xlabel("$Número de puntos$")
+plt.ylabel("$Tiempo de ejecución$")
+plt.legend(loc="upper left")
+plt.savefig("times.png")
+plt.show()
