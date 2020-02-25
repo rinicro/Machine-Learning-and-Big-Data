@@ -5,6 +5,7 @@ Rubén Ruperto Díaz y Rafael Herrera Troca
 '''
 
 from matplotlib import cm
+from mpl_toolkits.mplot3d import Axes3D
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
