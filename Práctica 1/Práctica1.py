@@ -10,9 +10,11 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-def desc_grad(x, y, alpha=0.01, theta=[0,0], it=1500):
-    X = np.array([np.ones(len(y)),x])
+def desc_grad(x, y, alpha=0.01, theta=None, it=1500):
+    X = np.vstack((np.ones(len(y)), x.T)) 
     y = np.array(y)
+    if (theta == None):
+        theta = np.zeros(np.shape(X)[0])
     thetas = np.array([theta])
     for i in range(it):
         h = np.dot(theta, X)
@@ -21,10 +23,22 @@ def desc_grad(x, y, alpha=0.01, theta=[0,0], it=1500):
         thetas = np.append(thetas, [theta], axis=0)
     return theta, thetas, cost(thetas, X, y)
 
+def ec_norm(x, y):
+    X = np.hstack((np.array([np.ones(len(y))]).T, x))
+    y = np.array(y)
+    theta = np.dot(np.dot(np.linalg.pinv(np.dot(X.T,X)),X.T),y)
+    return theta
+
 def cost(theta, X, y):
     h = np.dot(theta, X)
     sumandos = (h - y)**2
     return 1 / (2 * len(y)) * np.sum(sumandos, 1)
+
+def normalizar(x):
+    mu = np.mean(x, 0)
+    sigma = np.std(x, 0)
+    x2 = (x - mu) / sigma
+    return x2, mu, sigma
 
 
 # Parte 1: Regresión con una variable
@@ -36,7 +50,7 @@ data = pd.read_csv("ex1data1.csv", names=['población', 'beneficios'])
 # Utilizamos nuestra función desc_grad para calcular los valores de theta y
 # además se obtienen los valores que ha ido tomando theta durante el proceso
 # y el coste para cada uno
-x = data['población'].tolist()
+x = np.array(data['población'].tolist()).T
 y = data['beneficios'].tolist()
 theta, thetas, costes = desc_grad(x, y, theta=[0.9,3.9])
 
@@ -90,3 +104,44 @@ plt.show()
 
 
 # Parte 2: Regresión con varias variables
+
+
+# Leemos los datos que usaremos 
+data = pd.read_csv("ex1data2.csv", names=['superficie', 'habitaciones', 'precio'])
+
+# Normalizamos los datos de entrada del algoritmo
+x = np.array([data['superficie'].tolist(), data['habitaciones'].tolist()]).T
+normx, mu, sigma = normalizar(x)
+
+# Utilizamos nuestra función desc_grad para calcular hacer la regresión lineal
+# variando la tasa de aprendizaje. Además, vamos almacenando los valores que
+# han ido tomando theta y la función de coste durante el proceso para cada 
+# posible valor de alfa
+# Además, representamos en una gráfica los valores que va tomando la función
+# de coste a medida que avanza el descenso de gradiente para cada valor de la
+# tasa de aprendizaje
+y = data['precio'].tolist()
+plt.figure(figsize=(10,10))
+for alfa in [0.3, 0.1, 0.03, 0.01, 0.003, 0.001]:
+    theta, thetas, costes = desc_grad(normx,y,alpha=alfa)
+    plt.plot(range(len(costes)), costes, linewidth=2, label=r"$J(\theta)$ con $\alpha=$" + str(alfa))
+plt.title(r"Evolución de la función de coste para distintos valores de $\alpha$")
+plt.xlabel("Iteración")
+plt.ylabel(r"$J(\theta)$")
+plt.legend(loc="upper right")
+plt.savefig("p2cost.png")
+plt.show()
+
+# Finalmente comprobamos que el resultado obtenido con el descenso de 
+# gradiente es correcto comparándolo con el que se obtiene a partir de la
+# ecuación normal
+thetaGrad = desc_grad(normx, y)[0]
+thetaNorm = ec_norm(x, y)
+
+ex = np.array([1650, 3])
+normEx = (ex-mu)/sigma
+ex = np.append([1], ex)
+normEx = np.append([1], normEx)
+
+print("Usando el descenso de gradiente, la predicción es y =", np.dot(thetaGrad, normEx))
+print("Usando la ecuación normal, la predicción es y =", np.dot(thetaNorm, ex))
