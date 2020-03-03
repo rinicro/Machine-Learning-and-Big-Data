@@ -88,7 +88,8 @@ plt.show()
 
 # Representamos las curvas de nivel de la función de coste según el valor
 # de theta y los valores que ha ido recorriendo nuestro descenso de gradiente
-Theta0, Theta1 = np.meshgrid(np.arange(-10,10,0.1), np.arange(-1,4,0.1))
+#Theta0, Theta1 = np.meshgrid(np.arange(-10,10,0.1), np.arange(-1,4,0.1))
+Theta0, Theta1 = np.meshgrid(np.arange(-4,3,0.1), np.arange(-1,6,0.1))
 Costes = cost(np.transpose(np.array([np.ravel(Theta0),np.ravel(Theta1)])), np.array([np.ones(len(y)),x]), np.array(y))
 Costes = np.reshape(Costes, np.shape(Theta0))
 fig = plt.figure(figsize=(10,10))
@@ -98,6 +99,7 @@ plt.plot(theta[0], theta[1], color='black', marker='x', label="Resultado final")
 plt.title("Curvas de nivel de la función de coste de la parte 1")
 plt.xlabel(r"$\theta_0$")
 plt.ylabel(r"$\theta_1$")
+plt.axis('equal')
 plt.legend(loc="lower right")
 plt.savefig("p1niv.png")
 plt.show()
