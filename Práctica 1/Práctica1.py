@@ -6,9 +6,12 @@ Rubén Ruperto Díaz y Rafael Herrera Troca
 
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
+import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+
+os.chdir("./resources")
 
 def desc_grad(x, y, alpha=0.01, theta=None, it=1500):
     X = np.vstack((np.ones(len(y)), x.T)) 

@@ -4,10 +4,13 @@ Práctica 0
 Rubén Ruperto Díaz y Rafael Herrera Troca
 '''
 
+import os
 import time
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.integrate as scpint
+
+os.chdir("./resources")
 
 # Función con la que trabajaremos f(x) = sin(x) + 1
 def f(x):
