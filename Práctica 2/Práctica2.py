@@ -17,7 +17,7 @@ os.chdir("./resources")
 
 # Función sigmoide
 def sigmoide(z):
-    return 1 / (1 + np.exp(z))
+    return 1 / (1 + np.exp(-z))
 
 def coste(theta, X, Y):
     gXTheta = sigmoide(np.dot(X, theta))
@@ -53,6 +53,6 @@ plt.show()
 X2 = np.hstack((np.array([np.ones(len(Y))]).T,X))
 theta0 = np.zeros(np.shape(X2)[1])
 result = opt.fmin_tnc(func=coste, x0=theta0, fprime=gradiente, args=(X2, Y))
-a=coste(result[0],X2,Y)
+c=coste(result[0],X2,Y)
 
 
