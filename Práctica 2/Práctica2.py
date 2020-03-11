@@ -53,6 +53,6 @@ plt.show()
 X2 = np.hstack((np.array([np.ones(len(Y))]).T,X))
 theta0 = np.zeros(np.shape(X2)[1])
 result = opt.fmin_tnc(func=coste, x0=theta0, fprime=gradiente, args=(X2, Y))
-a=coste(result[0],X2,Y)
+c=coste(result[0],X2,Y)
 
 
