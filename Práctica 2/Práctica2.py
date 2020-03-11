@@ -17,7 +17,7 @@ os.chdir("./resources")
 
 # Función sigmoide
 def sigmoide(z):
-    return 1 / (1 + np.exp(z))
+    return 1 / (1 + np.exp(-z))
 
 def coste(theta, X, Y):
     gXTheta = sigmoide(np.dot(X, theta))
