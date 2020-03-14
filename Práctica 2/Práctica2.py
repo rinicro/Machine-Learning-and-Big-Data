@@ -1,5 +1,5 @@
 '''
-Práctica 1
+Práctica 2
 
 Rubén Ruperto Díaz y Rafael Herrera Troca
 '''
@@ -109,13 +109,13 @@ plt.legend(loc="upper right")
 plt.savefig("p2Datos.png")
 plt.show()
 
-# Aplicamos PolynomialFeatures para mapear los atributos y obtener un mejor
-# ajuste a los ejemplos de entrenamiento
+# Aplicamos PolynomialFeatures para mapear los atributos y obtener 
+# un mejor ajuste a los ejemplos de entrenamiento
 X2 = PolynomialFeatures(6).fit_transform(X)
 
 # Calculamos el valor óptimo de theta
 theta0 = np.zeros(np.shape(X2)[1])
-result = fmin_tnc(func=costeP2, x0=theta0, fprime=gradienteP2, args=(X2, Y, 0))[0]
+result = fmin_tnc(func=costeP2, x0=theta0, fprime=gradienteP2, args=(X2, Y))[0]
 
 # Representamos el resultado obtenido
 xx1, xx2 = np.meshgrid(np.linspace(min(X[:,0]),max(X[:,0])), np.linspace(min(X[:,1]),max(X[:,1])))
@@ -136,3 +136,36 @@ plt.show()
 # Comprobamos el porcentaje de aciertos de la recta obtenida
 porc_ac = acierto(X2, Y, result)
 print("Se tiene un " + str(porc_ac*100) + "% de aciertos")
+
+# Repetimos el proceso anterior con distintos valores de lambda
+porc_ac = []
+for lmb in range(-10, 3):
+    theta0 = np.zeros(np.shape(X2)[1])
+    result = fmin_tnc(func=costeP2, x0=theta0, fprime=gradienteP2, args=(X2, Y, 10**lmb))[0]
+    
+    xx1, xx2 = np.meshgrid(np.linspace(min(X[:,0]),max(X[:,0])), np.linspace(min(X[:,1]),max(X[:,1])))
+    mesh = PolynomialFeatures(6).fit_transform(np.c_[xx1.ravel(),xx2.ravel()])
+    h = sigmoide(np.dot(mesh,result))
+    h = h.reshape(xx1.shape)
+    plt.figure(figsize=(10,10))
+    plt.scatter(X[corr, 0], X[corr, 1], marker='o', c='blue', label="Correctos")
+    plt.scatter(X[defe, 0], X[defe, 1], marker='x', c='red', label="Defectuosos")
+    plt.contour(xx1, xx2, h, [0.5], linewidths=1, colors='k')
+    plt.title(r"Función de decisión generada para $\lambda = $" + str(10**lmb))
+    plt.xlabel("Test 1")
+    plt.ylabel("Test 2")
+    plt.legend(loc="upper right")
+    plt.savefig("p2FuncionVL" + str(lmb) + ".png")
+    plt.show()
+    
+    porc_ac.append(acierto(X2, Y, result)*100)
+    print("Se tiene un " + str(porc_ac[-1]) + "% de aciertos para lambda " + str(10**lmb))
+
+# Representamos el porcentaje de aciertos según el valor de lambda
+plt.figure(figsize=(10,10))
+plt.plot(range(-10,3), porc_ac, 'ko-')
+plt.title(r"Porcentaje de aciertos según el valor de $\lambda$")
+plt.xlabel(r"$\lambda = 10^{x}$")
+plt.ylabel("Porcentaje de acierto")
+plt.savefig("AcXLambda.png")
+plt.show()
