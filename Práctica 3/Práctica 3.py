@@ -6,6 +6,7 @@ Rubén Ruperto Díaz y Rafael Herrera Troca
 
 import os
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy.io import loadmat
 from scipy.optimize import fmin_tnc
 
@@ -55,7 +56,6 @@ def acierto(X, Y):
     return np.count_nonzero(resultados == Y.ravel()) / len(Y)
     
 
-
 ## Parte 1
 
 # Leemos los datos
@@ -63,14 +63,25 @@ data = loadmat('ex3data1.mat')
 y = data['y'].ravel()
 X = data['X']
 
-# Entrenamos el clasificador
+# Entrenamos el clasificador con distintos valores para el término de 
+# regularización y almacenamos el porcentaje de acierto para cada uno
 X2 = np.hstack((np.array([np.ones(len(y))]).T,X))
-clas = oneVsAll(X2, y, 10, 0.1)
-
-# Comprobamos el porcentaje de aciertos
-result = sigmoide(np.dot(X2, clas.T))
-acC = acierto(result, y)
-print("El porcentaje de aciertos del clasificador es un " + str(acC*100) + "%.")
+porc_ac = []
+for lmb in range(-10, 3):
+    clas = oneVsAll(X2, y, 10, 10**lmb)
+    result = sigmoide(np.dot(X2, clas.T))
+    porc_ac.append(acierto(result, y)*100)
+    print("Con lambda = 10^" + str(lmb) + ", el porcentaje de aciertos del clasificador es un " + str(porc_ac[-1]) + "%.")
+    
+# Representamos el porcentaje de aciertos del clasificador en función
+# del término de regularización
+plt.figure(figsize=(10,10))
+plt.plot(range(-10,3), porc_ac, 'ko-')
+plt.title(r"Porcentaje de aciertos según el valor de $\lambda$")
+plt.xlabel(r"$\lambda = 10^{x}$")
+plt.ylabel("Porcentaje de acierto")
+plt.savefig("AcXLambda.png")
+plt.show()
 
 
 ## Parte 2
