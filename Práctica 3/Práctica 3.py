@@ -42,12 +42,18 @@ def oneVsAll(X, y, num_et, reg):
         
     return result
 
-# Calcula el porcentaje de acierto obtenido con el valor de theta dado
+# Dada la entrada 'X' y los pesos 'theta' de una capa de una red neuronal,
+# aplica los pesos y devuelve la salida de la capa
+def applyLayer(X, theta):
+    thetaX = np.dot(X, theta.T)
+    return sigmoide(thetaX)
+
+# Calcula el porcentaje de acierto obtenido con la entrada dada
 # y las etiquetas correctas en y
-def acierto(X, Y, theta):
-    gXTheta = sigmoide(np.dot(X, theta.T))
-    resultados = gXTheta.argmax(axis=1) + 1
+def acierto(X, Y):
+    resultados = X.argmax(axis=1) + 1
     return np.count_nonzero(resultados == Y.ravel()) / len(Y)
+    
 
 
 ## Parte 1
@@ -62,5 +68,22 @@ X2 = np.hstack((np.array([np.ones(len(y))]).T,X))
 clas = oneVsAll(X2, y, 10, 0.1)
 
 # Comprobamos el porcentaje de aciertos
-ac = acierto(X2, y, clas)
-print("El porcentaje de aciertos del clasificador es un " + str(ac*100) + "%.")
+result = sigmoide(np.dot(X2, clas.T))
+acC = acierto(result, y)
+print("El porcentaje de aciertos del clasificador es un " + str(acC*100) + "%.")
+
+
+## Parte 2
+
+# Leemos los datos
+weights = loadmat('ex3weights.mat')
+theta1, theta2 = weights['Theta1'], weights['Theta2']
+
+# Aplicamos las dos capas de la red neuronal
+lay1 = applyLayer(X2, theta1)
+lay1 = np.hstack((np.array([np.ones(np.shape(lay1)[0])]).T,lay1))
+lay2 = applyLayer(lay1, theta2)
+
+# Comprobamos el porcentaje de aciertos
+acR = acierto(lay2, y)
+print("El porcentaje de aciertos de la red neuronal es un " + str(acR*100) + "%.")
