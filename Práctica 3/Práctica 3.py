@@ -29,9 +29,10 @@ def gradiente(theta, X, Y, lmb=1):
     thetaJ = np.concatenate(([0], theta[1:]))
     return 1 / len(Y) * np.dot(X.T, gXTheta-Y) + lmb / len(Y) * thetaJ
 
-# Entrena varios clasificadores por regresión logística con el término
-# de regularización dado en 'reg' y devuelve el resultado en una matriz
-# con el clasificador de la etiqueta i-ésima en dicha fila
+# Entrena varios clasificadores por regresión logística con el  
+# término de regularización dado en 'reg' y devuelve el resultado 
+# en una matriz con el clasificador de la etiqueta i-ésima en dicha 
+# fila
 def oneVsAll(X, y, num_et, reg):
     theta0 = np.zeros(np.shape(X)[1])
     
@@ -43,8 +44,8 @@ def oneVsAll(X, y, num_et, reg):
         
     return result
 
-# Dada la entrada 'X' y los pesos 'theta' de una capa de una red neuronal,
-# aplica los pesos y devuelve la salida de la capa
+# Dada la entrada 'X' y los pesos 'theta' de una capa de una red 
+# neuronal, aplica los pesos y devuelve la salida de la capa
 def applyLayer(X, theta):
     thetaX = np.dot(X, theta.T)
     return sigmoide(thetaX)
@@ -63,8 +64,9 @@ data = loadmat('ex3data1.mat')
 y = data['y'].ravel()
 X = data['X']
 
-# Entrenamos el clasificador con distintos valores para el término de 
-# regularización y almacenamos el porcentaje de acierto para cada uno
+# Entrenamos el clasificador con distintos valores para el término 
+# de regularización y almacenamos el porcentaje de acierto para 
+# cada uno
 X2 = np.hstack((np.array([np.ones(len(y))]).T,X))
 porc_ac = []
 for lmb in range(-10, 3):
@@ -73,8 +75,8 @@ for lmb in range(-10, 3):
     porc_ac.append(acierto(result, y)*100)
     print("Con lambda = 10^" + str(lmb) + ", el porcentaje de aciertos del clasificador es un " + str(porc_ac[-1]) + "%.")
     
-# Representamos el porcentaje de aciertos del clasificador en función
-# del término de regularización
+# Representamos el porcentaje de aciertos del clasificador en 
+# función del término de regularización
 plt.figure(figsize=(10,10))
 plt.plot(range(-10,3), porc_ac, 'ko-')
 plt.title(r"Porcentaje de aciertos según el valor de $\lambda$")
