@@ -50,8 +50,8 @@ def applyNet(X, theta):
     return lay,a
 
 # Calcula la función de coste de una red neuronal para la 
-# salida esperada 'y', el resultado de la red 'h_theta', el
-# array de matrices de pesos 'theta' y el término de regularización 'reg'
+# salida esperada 'y', el resultado de la red 'h_theta', el array
+# de matrices de pesos 'theta' y el término de regularización 'reg'
 def coste(y, h_theta, theta, reg):
     sumandos = -y * np.log(h_theta) - (1-y) * np.log(1-h_theta)
     regul = 0
@@ -60,10 +60,10 @@ def coste(y, h_theta, theta, reg):
     result = np.sum(sumandos) / len(y) + reg * regul / (2*len(y))
     return result
 
-# Calcula el gradiente de la función de coste haciento retropropagación
-# dada la salida esperada 'y', la entrada de cada capa 'a', la salida
-# de la red 'h_theta', el array de matrices de pesos 'theta' y
-# el término de regularización 'reg'
+# Calcula el gradiente de la función de coste haciendo 
+# retropropagación dada la salida esperada 'y', la entrada 
+# de cada capa 'a', la salida de la red 'h_theta', el array de
+# matrices de pesos 'theta' y el término de regularización 'reg'
 def gradiente(y, a, h_theta, theta, reg):
     d = h_theta - y
     delta = [np.dot(d.T, a[-1]) / len(y)]
@@ -108,8 +108,8 @@ def backprop(params_rn, capas, X, y, reg):
     
     return cost, g
 
-# Calcula el porcentaje de acierto obtenido con la respuesta dada en 'X'
-# y las etiquetas correctas en 'Y'
+# Calcula el porcentaje de acierto obtenido con la respuesta dada 
+# en 'X' y las etiquetas correctas en 'Y'
 def acierto(X, Y):
     resultados = X.argmax(axis=1) + 1
     return 100 * np.count_nonzero(resultados == Y.ravel()) / len(Y)
@@ -167,7 +167,7 @@ plt.savefig("LineasLambda.png")
 plt.show()
 
 xLabels = [str(it) for it in itera]
-yLabels = [r'$10^{' + str(r) + '}$'for r in reg]
+yLabels = [r'$10^{' + str(r) + '}$' for r in reg]
 plt.figure(figsize=(10,10))
 plt.title(r"Porcentaje de aciertos según el valor de $\lambda$")
 fig = plt.subplot()
