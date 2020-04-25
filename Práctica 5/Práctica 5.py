@@ -18,12 +18,13 @@ os.chdir("./resources")
 def coste(theta, X, Y, reg=0):
     return np.sum((np.dot(X, theta) - Y)**2) / (2*len(Y)) + reg / (2*len(Y)) * np.sum(theta[1:]**2)
     
-# Gradiente de la función de coste para la regresión lineal regularizada
+# Gradiente de la función de coste para la regresión lineal 
+# regularizada
 def gradiente(theta, X, Y, reg=0):
     return np.dot((np.dot(X, theta) - Y).T, X) / len(Y) + reg / len(Y) * np.concatenate(([0], theta[1:]))
 
-# Dada una matriz columna X, devuelve la matriz que en la columna i tiene
-# X^i, con i en [1,p]
+# Dada una matriz columna X, devuelve la matriz que en la columna i 
+# tiene X^i, con i en [1,p]
 def potencia(X, p):
     res = X
     pot = X
@@ -67,7 +68,7 @@ theta = minimize(fun=coste, x0=theta0, args=(X2, y, reg), method='TNC', jac=grad
 part = np.linspace(min(X),max(X),1000)
 plt.figure(figsize=(10,10))
 plt.plot(X, y, 'ro', label="Datos suministrados")
-plt.plot(part, theta[0]+theta[1]*part, 'b', label="Recta de regresión")
+plt.plot(part,theta[0]+theta[1]*part,'b',label="Recta de regresión")
 plt.title("Recta de regresión obtenida")
 plt.xlabel("Cambio en el nivel del agua")
 plt.ylabel("Agua que sale de la presa")
@@ -84,14 +85,14 @@ plt.show()
 errorTrain = []
 errorVal = []
 for i in range(1,len(X2)+1):
-    theta = minimize(fun=coste, x0=theta0, args=(X2[:i], y[:i], reg), method='TNC', jac=gradiente)['x']
+    theta = minimize(fun=coste, x0=theta0, args=(X2[:i],y[:i],reg), method='TNC', jac=gradiente)['x']
     errorTrain.append(coste(theta, X2[:i], y[:i]))
     errorVal.append(coste(theta, Xval2, yval))
     
 # Representamos las curvas de aprendizaje obtenidas
 plt.figure(figsize=(10,10))
-plt.plot(range(1,len(errorTrain)+1), errorTrain, 'r', label="Entrenamiento")
-plt.plot(range(1,len(errorVal)+1), errorVal, 'b', label="Validación")
+plt.plot(range(1,len(errorTrain)+1),errorTrain,'r',label="Entrenamiento")
+plt.plot(range(1,len(errorVal)+1),errorVal,'b',label="Validación")
 plt.title("Curvas de aprendizaje para regresión lineal")
 plt.xlabel("Número de ejemplos de entrenamiento")
 plt.ylabel("Error")
@@ -115,12 +116,12 @@ for reg in [0,1,100]:
     
     # Entrenamos la regresión
     theta0 = np.zeros(np.shape(X2)[1])
-    theta = minimize(fun=coste, x0=theta0, args=(X2, y, reg), method='TNC', jac=gradiente)['x']
+    theta = minimize(fun=coste, x0=theta0, args=(X2,y,reg), method='TNC', jac=gradiente)['x']
     
     # Representamos los datos y la curva obtenida
     partX = np.arange(min(X),max(X),0.05)
-    partX2 = normalizar(potencia(np.array([partX]).T, 8), mu, sigma)[0]
-    partX2 = np.hstack((np.array([np.ones(len(partX2))]).T, partX2))
+    partX2 = normalizar(potencia(np.array([partX]).T,8),mu,sigma)[0]
+    partX2 = np.hstack((np.array([np.ones(len(partX2))]).T,partX2))
     partY = np.dot(partX2, theta)
     plt.figure(figsize=(10,10))
     plt.plot(X, y, 'ro', label="Datos suministrados")
@@ -134,11 +135,12 @@ for reg in [0,1,100]:
     
     # Calculamos el error con el conjunto de entrenamiento y el de
     # validación para subconjuntos crecientes de entrenamiento.
-    # Para calcular el error usamos la función de coste sin regularizar
+    # Para calcular el error usamos la función de coste sin 
+    # término de regularización
     errorTrain = []
     errorVal = []
     for i in range(1,len(X2)+1):
-        theta = minimize(fun=coste, x0=theta0, args=(X2[:i], y[:i], reg), method='TNC', jac=gradiente)['x']
+        theta = minimize(fun=coste,x0=theta0,args=(X2[:i],y[:i],reg),method='TNC',jac=gradiente)['x']
         errorTrain.append(coste(theta, X2[:i], y[:i]))
         errorVal.append(coste(theta, Xval2, yval))
         
@@ -172,7 +174,8 @@ for reg in regValues:
     errorTrain.append(coste(theta, X2[:i], y[:i]))
     errorVal.append(coste(theta, Xval2, yval))
     
-# Representamos el error obtenido según el parámetro de regularización
+# Representamos el error obtenido según el valor del
+# parámetro de regularización
 plt.figure(figsize=(10,10))
 plt.plot(regValues, errorTrain, 'r', label="Entrenamiento")
 plt.plot(regValues, errorVal, 'b', label="Validación")
